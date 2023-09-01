@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "geography.h"
+#include "buildings.h"
 square grid[gsz];
 building_t buildings[10000];
 int num_buildings;
@@ -72,4 +73,5 @@ void renderGrid(void){
 }
 void generateCity(land_type land, city_size size){
     calcGeography(grid, land);
+    GenerateBuildings(grid);
 }
