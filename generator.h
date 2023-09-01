@@ -5,10 +5,14 @@ typedef enum {
 #define sz 100
 #define gsz 10000
 typedef struct{
-    
+    int x;
+    int y;
+    char type;
 } building_t;
 void renderGrid(void);
-
+building_t * get_buildings();
+void setNumBuildings(int value);
+int getNumBuildings();
 typedef enum{
     water_north, water_south, water_east, water_west, river_north_south, river_east_west, island,
 }land_type;
