@@ -7,6 +7,8 @@
 #include <string.h>
 #include "geography.h"
 square grid[gsz];
+building_t buildings[10000];
+int num_buildings;
 void drawRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b){
     glBegin(GL_TRIANGLES);
     glColor3b(r,g,b);

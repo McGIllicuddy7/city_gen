@@ -4,7 +4,9 @@ typedef enum {
 } square;
 #define sz 100
 #define gsz 10000
-
+typedef struct{
+    
+} building_t;
 void renderGrid(void);
 
 typedef enum{

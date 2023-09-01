@@ -47,7 +47,7 @@ void createRoad(square * grid, bool ns,int start){
             }
             
         }
-        if(RandomInt()%100<5){
+        if(RandomInt()%100<3){
             x_direction += randDouble()/2;
             y_direction += randDouble()/2;
             y_direction = y_direction/sqrt(x_direction*x_direction+y_direction*y_direction);
