@@ -38,7 +38,7 @@ void createRoad(square * grid, bool ns,int start){
         grid[(int)round(y)*sz+(int)round(x)] = street;
         x+=x_direction;
         y+=y_direction;
-        if(abs(round(x-x_direction)-round(x)>=1) && abs(round(y-y_direction)-round(y)>=1)){
+        if(abs(round(x+x_direction)-round(x)>=1) && abs(round(y+y_direction)-round(y)>=1)){
             if(fabs(x_direction)>fabs(y_direction)){
                 grid[(int)round(y+y_direction)*sz+(int)round(x)] = street;
             }
