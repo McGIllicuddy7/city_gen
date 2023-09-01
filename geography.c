@@ -111,12 +111,12 @@ void create_coastline(square * grid, int direction){
 void calcGeography(square * grid, land_type t){
     int s = 10;
     for(int i = 0; i<s; i++){
-        if(true){
+        if(RandomInt()%100<78){
             createRoad(grid, true, i*sz/s);
         }
     }
     for(int i = 0; i<s; i++){
-        if(true){
+        if(RandomInt()%100<78){
             createRoad(grid, false, i*sz/s);
         }
     }
