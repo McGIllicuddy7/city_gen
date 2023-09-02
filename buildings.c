@@ -1,13 +1,18 @@
 #include "buildings.h"
 #include <iutils.h>
+#include <math.h>
 #include <stdio.h>
-
+int population = 0;
+bool building_locs[gsz];
+int num_times_called = 0;
 void addBuildingAtGridSpaceCoord(int x, int y){
     building_t * b = get_buildings();
     int x1 = x*900/sz;
     int y1 = y*900/sz;
     b[getNumBuildings()] = (building_t){x1, y1, 0};
     setNumBuildings(getNumBuildings()+1);
+    building_locs[y*sz+x] = false;
+    num_times_called++;
 }
 typedef struct {
     int x; 
@@ -25,18 +30,22 @@ int int2Distance(int2 a, int2 b){
 #define gridGet(x,y) grid[y*sz+x]
 
 bool gridCheck(int x, int y){
-    int len = getNumBuildings();
-    for(int i = 0; i<len; i++){
-        if(((get_buildings())[i].x == x) && ((get_buildings())[i].y == y)){
+    return building_locs[y*sz+x];
+    int n = getNumBuildings();
+    building_t * b = get_buildings();
+    building_t b1;
+    for(int i = 0; i<n; i++){
+        b1 = b[i];
+        if((b1.x == x) && (b1.y == y) ){
             return false;
         }
     }
-    return true;
+    return true ||building_locs[y*sz+x];
 }
 int2 calcCityCenterMass(){
     int2 out = {0,0};
     if(getNumBuildings() == 0){
-        return (int2){37, 37};
+        return (int2){sz/2, sz/2};
     }
     for(int i = 0; i<getNumBuildings(); i++){
         out.x += (get_buildings())[i].x;
@@ -48,7 +57,7 @@ int2 calcCityCenterMass(){
 }
 int max_distance_pop(int pop){
     pop+=1;
-    return 4*sqrt(sqrt(pop));
+    return 3*sqrt(sqrt(pop)*2+1);
 }
 int2Array_t calcSuitablePositions(square * grid, int pop){
     int2Array_t out;
@@ -58,8 +67,8 @@ int2Array_t calcSuitablePositions(square * grid, int pop){
         for(int x = 1; x<sz-1; x++){
             if(gridGet(x,y) != water && gridGet(x,y) != street){
                 if(gridGet(x+1,y) == street || gridGet(x, (y+1)) == street || gridGet(x-1, y) == street || gridGet(x, (y-1)) == street){
-                    if(gridCheck(x,y)){
-                        if(int2Distance((int2){37,37}, (int2){x,y})<=max_distance_pop(pop)){
+                    if(int2Distance((int2){sz/2,sz/2}, (int2){x,y})<=max_distance_pop(pop)){
+                        if(gridCheck(x,y)){
                             out.vals[out.length] = (int2){x,y};
                             out.length++;
                         }
@@ -77,6 +86,7 @@ int2 calcLocation(int2Array_t arr){
 void GenerateBuildings(square * grid, city_size size){
     int max_population = 0;
     int pop = 0;
+    for(int i = 0; i<gsz; i++){building_locs[i] = true;}
     if(size == village){
         max_population = RandomIntInRange(100, 250);
     }
@@ -113,12 +123,25 @@ void GenerateBuildings(square * grid, city_size size){
         }
         free(poses.vals);
     }
+    population = pop;
+}
+void remove_streets(square * grid){
     for(int y = 0; y<sz; y++){
         for(int x= 0; x<sz; x++){
-            int d = max_distance_pop(pop)+1;
-            if(int2Distance((int2){x,y}, calcCityCenterMass())>d){
-                if(gridGet(x,y) == street){
-                    gridGet(x,y) = ground_grass;
+            if(gridGet(x,y) == street){
+                gridGet(x,y) = ground_grass;
+            }
+        }
+    }
+}
+void GenerateWalls(square * grid){
+    int d = max_distance_pop(population)+1;
+    for(int y = 0; y<sz; y++){
+        for(int x= 0; x<sz; x++){
+            float distance = (sqrt((x-sz/2)*(x-sz/2)+(y-sz/2)*(y-sz/2)));
+            if(false){
+                if(gridGet(x,y) == ground_grass){
+                    gridGet(x,y) = wall;
                 }
             }
         }

@@ -47,7 +47,7 @@ void createRoad(square * grid, bool ns,int start){
             }
             
         }
-        if(RandomInt()%100<3){
+        if(RandomInt()%100<40){
             x_direction += randDouble()/2;
             y_direction += randDouble()/2;
             y_direction = y_direction/sqrt(x_direction*x_direction+y_direction*y_direction);
@@ -111,12 +111,12 @@ void create_coastline(square * grid, int direction){
 void calcGeography(square * grid, land_type t){
     int s = 20;
     for(int i = 0; i<s; i++){
-        if(RandomInt()%100<78){
+        if(RandomInt()%100<90){
             createRoad(grid, true, i*sz/s);
         }
     }
     for(int i = 0; i<s; i++){
-        if(RandomInt()%100<78){
+        if(RandomInt()%100<90){
             createRoad(grid, false, i*sz/s);
         }
     }

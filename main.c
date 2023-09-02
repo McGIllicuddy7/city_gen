@@ -28,8 +28,8 @@ int main(int argc, char ** argv){
     printf("enter city size(village 0, small_town 1, medium_town 2, large_town 3, small_city 4, medium_city 5, large_city 6): ");
     fgets(buff, 100, stdin);
     int s = atoi(buff);
-    printf("%d, %d", t,s);
-    generateCity(t,s);
+    generateCity(t,s, false);
+    printf("number buildings: %d\n", getNumBuildings());
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(900,900);

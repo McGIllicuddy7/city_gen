@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "geography.h"
 #include "buildings.h"
 square grid[gsz];
@@ -44,6 +45,14 @@ void standardDrawRectangle(int x, int y, int height, int width, unsigned char r,
     float w = ((float)width)/450;
     drawRectangle(x1,y1,h,w, r,g,b);
 }
+void displayText( float x, float y, int r, int g, int b, const char *string ) {
+    int j = strlen( string );
+    glColor3f( r, g, b );
+    glRasterPos2f( x, y );
+    for( int i = 0; i < j; i++ ) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, string[i] );
+    }
+}
 void renderGrid(void){
     for(int y = 0; y<sz; y++){
         for(int x = 0; x<sz; x++){
@@ -58,13 +67,16 @@ void renderGrid(void){
             else if(sq == water){
                 standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 0,0,127);
             }
+            else if(sq == wall){
+                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 0,0,0);
+            }
             else{
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 60,45,0);
+                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz,45,45,45);
             }
         }
     }
     for(int i = 0; i<num_buildings; i++){
-        standardDrawRectangle(buildings[i].x+2, buildings[i].y+2, 9, 9, 127, 45, 0);
+        standardDrawRectangle(buildings[i].x+3, buildings[i].y+3, 10, 10, 60, 45, 0);
     }
     for(int x =0; x<sz; x++){
         standardDrawRectangle(x*900/sz,0,900, 1,0,0,0);
@@ -72,8 +84,25 @@ void renderGrid(void){
     for(int y = 0; y<= sz; y++){
         standardDrawRectangle(0,y*900/sz,1,900,0,0,0);
     }
+    for(int i = 0; i<num_buildings; i++){
+        char buff[100];
+        sprintf(buff,"%d", i);
+        float x = buildings[i].x+5;
+        float y = buildings[i].y+5;
+        displayText(x/450-1, y/450-1, 255,255,255, buff);
+    }
 }
-void generateCity(land_type land, city_size size){
+void generateCity(land_type land, city_size size, bool walled){
+    long t = time(0);
     calcGeography(grid, land);
+    printf("geography done %ld seconds\n", time(0)-t);
+    t = time(0);
     GenerateBuildings(grid, size);
+    printf("buidlings done %ld seconds\n", time(0)-t);
+    t = time(0);
+    if(walled){
+        GenerateWalls(grid);
+    }
+    remove_streets(grid);
+    printf("streets done %ld seconds\n", time(0)-t);
 }
