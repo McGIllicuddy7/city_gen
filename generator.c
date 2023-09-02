@@ -8,8 +8,8 @@
 #include "geography.h"
 #include "buildings.h"
 square grid[gsz];
-building_t buildings[10000];
-int num_buildings;
+building_t buildings[10000] = {450, 450, 0};
+int num_buildings = 0;
 building_t * get_buildings(){
     return buildings;
 }
@@ -50,7 +50,7 @@ void renderGrid(void){
             square sq = grid[y*sz+x]; 
             //printf("%d, ", sq);
             if(sq == ground_grass){
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz,25,127,35);
+                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz,25,100,35);
             }
             else if(sq ==ground_forest){
                 standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 0,60,0);
@@ -59,10 +59,12 @@ void renderGrid(void){
                 standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 0,0,127);
             }
             else{
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 90,45,0);
+                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 60,45,0);
             }
         }
-        //exit(0);
+    }
+    for(int i = 0; i<num_buildings; i++){
+        standardDrawRectangle(buildings[i].x+2, buildings[i].y+2, 9, 9, 127, 45, 0);
     }
     for(int x =0; x<sz; x++){
         standardDrawRectangle(x*900/sz,0,900, 1,0,0,0);
@@ -73,5 +75,5 @@ void renderGrid(void){
 }
 void generateCity(land_type land, city_size size){
     calcGeography(grid, land);
-    GenerateBuildings(grid);
+    GenerateBuildings(grid, size);
 }

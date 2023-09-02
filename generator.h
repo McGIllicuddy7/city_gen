@@ -2,8 +2,8 @@
 typedef enum {
     ground_grass = 0, ground_forest = 1, water = 2, street = 3
 } square;
-#define sz 100
-#define gsz 10000
+#define sz 75
+#define gsz 5625
 typedef struct{
     int x;
     int y;
