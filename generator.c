@@ -11,6 +11,8 @@
 square grid[gsz];
 building_t buildings[10000] = {450, 450, 0};
 int num_buildings = 0;
+bool shouldShow = true;
+int interestingIndices[100] = {-1};
 building_t * get_buildings(){
     return buildings;
 }
@@ -59,10 +61,10 @@ void renderGrid(void){
             square sq = grid[y*sz+x]; 
             //printf("%d, ", sq);
             if(sq == ground_grass){
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz,25,100,35);
+                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz,0,60,0);
             }
             else if(sq ==ground_forest){
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 0,60,0);
+                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 25,45,5);
             }
             else if(sq == water){
                 standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 0,0,127);
@@ -76,7 +78,7 @@ void renderGrid(void){
         }
     }
     for(int i = 0; i<num_buildings; i++){
-        standardDrawRectangle(buildings[i].x+3, buildings[i].y+3, 10, 10, 60, 45, 0);
+        standardDrawRectangle(buildings[i].x+1, buildings[i].y+1, 7, 7,40, 20, 0);
     }
     for(int x =0; x<sz; x++){
         standardDrawRectangle(x*900/sz,0,900, 1,0,0,0);
@@ -84,12 +86,36 @@ void renderGrid(void){
     for(int y = 0; y<= sz; y++){
         standardDrawRectangle(0,y*900/sz,1,900,0,0,0);
     }
-    for(int i = 0; i<num_buildings; i++){
+    if(!shouldShow){
+        return;
+    }
+    for(int i =0; i<num_buildings; i++){
         char buff[100];
         sprintf(buff,"%d", i);
         float x = buildings[i].x+5;
         float y = buildings[i].y+5;
-        displayText(x/450-1, y/450-1, 255,255,255, buff);
+        displayText(x/450-1, y/450-1, 125,125,125, buff);
+    }
+}
+void recalculateLocations(){
+    //exit(0);
+    int indices[gsz] = {-1};
+    for(int i = 0; i<gsz; i++){
+        indices[i] = -1;
+    }
+    for(int i = 0; i<num_buildings; i++){
+        indices[(sz*sz-(buildings[i].y*sz/900*sz))+buildings[i].x*sz/900] = i;
+    }
+    building_t nbuildings[10000];
+    int c = 0;
+    for(int i = 0; i<gsz; i++){
+        if(indices[i]>-1){
+            nbuildings[c] = buildings[indices[i]];
+            c++;
+        }
+    }
+    for(int i =0 ; i<num_buildings; i++){
+        buildings[i] = nbuildings[i];
     }
 }
 void generateCity(land_type land, city_size size, bool walled){
@@ -104,5 +130,49 @@ void generateCity(land_type land, city_size size, bool walled){
         GenerateWalls(grid);
     }
     remove_streets(grid);
+    recalculateLocations();
+    prettifyGeography(grid);
     printf("streets done %ld seconds\n", time(0)-t);
+}
+void save_city(char * name){
+    char buffer[1000] = "output/";
+    int l = strlen(name);
+    int d = strlen(buffer);
+    for(int i = 0; i<l-1; i++){
+        buffer[i+d] = name[i];
+    }
+    l = strlen(buffer);
+    buffer[l] = '.';
+    buffer[l+1] = 'b';
+    buffer[l+2] = 'i';
+    buffer[l+3] = 'n';
+    FILE * file = fopen(buffer, "wb");
+    fwrite(grid, sizeof(square),gsz, file);
+    fwrite(&num_buildings,sizeof(int), 1, file);
+    fwrite(buildings,sizeof(building_t), num_buildings, file);
+    fclose(file);
+}
+void load_city(char * name){
+    char buffer[1000] = "output/";
+    int l = strlen(name);
+    int d = strlen(buffer);
+    for(int i = 0; i<l-1; i++){
+        buffer[i+d] = name[i];
+    }
+    l = strlen(buffer);
+    buffer[l] = '.';
+    buffer[l+1] = 'b';
+    buffer[l+2] = 'i';
+    buffer[l+3] = 'n';
+    FILE * file = fopen(buffer, "rb");
+    if(!file){
+        fprintf(stderr, "failed to find city: %s", name);
+    }
+    fread(grid, sizeof(square),gsz, file);
+    fread(&num_buildings,sizeof(int), 1, file);
+    fread(buildings,sizeof(building_t), num_buildings, file);
+    fclose(file);
+}
+void flipShouldShow(){
+    shouldShow= !shouldShow;
 }

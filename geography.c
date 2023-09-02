@@ -47,7 +47,7 @@ void createRoad(square * grid, bool ns,int start){
             }
             
         }
-        if(RandomInt()%100<40){
+        if(RandomInt()%100<25){
             x_direction += randDouble()/2;
             y_direction += randDouble()/2;
             y_direction = y_direction/sqrt(x_direction*x_direction+y_direction*y_direction);
@@ -83,7 +83,7 @@ void createRiver(square * grid, bool ns){
 
 void create_coastline(square * grid, int direction){
     int offset = RandomInt()%5+5;
-    for(int i = 0; i<sz; i++){
+    for(int i = -1; i<=sz; i++){
         for(int k = 0; k<offset; k++){
             if(direction == north){
                 grid[(sz-k)*sz+i] = water;
@@ -109,14 +109,14 @@ void create_coastline(square * grid, int direction){
 }
 
 void calcGeography(square * grid, land_type t){
-    int s = 20;
+    int s = 25;
     for(int i = 0; i<s; i++){
-        if(RandomInt()%100<90){
+        if(RandomInt()%100<100){
             createRoad(grid, true, i*sz/s);
         }
     }
     for(int i = 0; i<s; i++){
-        if(RandomInt()%100<90){
+        if(RandomInt()%100<100){
             createRoad(grid, false, i*sz/s);
         }
     }
@@ -143,5 +143,24 @@ void calcGeography(square * grid, land_type t){
     }
     else if(t == river_north_south){
         createRiver(grid, true);
+    }
+}
+static void drawCircle(square * grid, int x, int y, int rad){
+    for(int x1 = 0; x1<sz; x1++){
+        for(int y1 = 0; y1<sz; y1++){
+            int d = sqrt((x1-x)*(x1-x)+(y1-y)*(y1-y));
+            if(d<=rad){
+                if(RandomInt()%10<9){
+                    if(grid[y*sz+x] != water){
+                        grid[y*sz+x] = ground_forest;
+                    }
+                }
+            }
+        }
+    }
+}
+void prettifyGeography(square * grid){
+    for(int i = 0; i<1000; i++){
+        drawCircle(grid, RandomInt()%sz, RandomInt()%sz, RandomInt()%5+4);
     }
 }

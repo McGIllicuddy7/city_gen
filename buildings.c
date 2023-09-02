@@ -55,9 +55,31 @@ int2 calcCityCenterMass(){
     out.y = out.y/getNumBuildings();
     return out;
 }
-int max_distance_pop(int pop){
-    pop+=1;
-    return 3*sqrt(sqrt(pop)*2+1);
+int max_distance_pop(int pop){ 
+    if(pop<100){
+        return 6;
+    }
+    else if(pop<200){
+        return 12;
+    }
+    else if(pop<500){
+        return 17;
+    }
+    else if(pop<1000){
+        return 20;
+    }
+    else if(pop<2000){
+        return 30;
+    }
+    else if(pop<4000){
+        return 40;
+    }
+    else if(pop<8000){
+        return 60;
+    }
+    else{
+        return 55;
+    }
 }
 int2Array_t calcSuitablePositions(square * grid, int pop){
     int2Array_t out;
@@ -108,6 +130,7 @@ void GenerateBuildings(square * grid, city_size size){
     else{
         max_population = RandomIntInRange(8000, 16000);
     }
+    printf("max population: %d\n", max_population);
     while(true){
         int2Array_t poses =  calcSuitablePositions(grid,pop);
         if(poses.length<1){
@@ -116,7 +139,7 @@ void GenerateBuildings(square * grid, city_size size){
         }
         int2 position = calcLocation(poses);
         addBuildingAtGridSpaceCoord(position.x, position.y);
-        pop+=1;
+        pop+=4;
         if(pop>=max_population){
             free(poses.vals);
             break;
