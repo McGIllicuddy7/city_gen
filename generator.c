@@ -1,7 +1,13 @@
 #define GL_SILENCE_DEPRECATION
 #include "generator.h"
-#include <OpenGL/gl.h>
+#ifdef __linux__
+#include <GL/gl.h>
+#include <GL/freeglut.h>
+#endif
+#ifdef __osx__
+#include <OPENGL/gl.h>
 #include <GLUT/glut.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,13 +30,13 @@ int getNumBuildings(){
 }
 void drawRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b){
     glBegin(GL_TRIANGLES);
-    glColor3b(r,g,b);
+    glColor3f((float)r/127,(float)g/127,(float)b/127);
     glVertex2d(x, y);
     glVertex2d(x, y+height);
     glVertex2d(x+width, y+height);
     glEnd();
     glBegin(GL_TRIANGLES);
-    glColor3b(r,g,b);
+    glColor3f((float)r/127,(float)g/127,(float)b/127);
     glVertex2d(x, y);
     glVertex2d(x+width, y);
     glVertex2d(x+width, y+height);

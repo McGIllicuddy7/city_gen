@@ -1,6 +1,12 @@
 #define GL_SILENCE_DEPRECATION
-#include <OpenGL/gl.h>
+#ifdef __linux__
+#include <GL/gl.h>
+#include <GL/freeglut.h>
+#endif
+#ifdef __osx__
+#include <OPENGL/gl.h>
 #include <GLUT/glut.h>
+#endif
 #include <stdlib.h>
 #include "generator.h"
 #include <stdio.h>
@@ -9,7 +15,7 @@ char cityName[1000];
 void tick(void){
     glClearColor(1,1,1,1);
     glClear(GL_COLOR_BUFFER_BIT);
-    glColor3b(1,1,1);
+    glColor3f(1,1,1);
     renderGrid();
     glutPostRedisplay();
     glFlush();
@@ -45,7 +51,7 @@ int main(int argc, char ** argv){
     }
     printf("number buildings: %d\n", getNumBuildings());
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
     glutInitWindowSize(900,900);
     glutInitWindowPosition(100,100);
     glutCreateWindow("Map");
