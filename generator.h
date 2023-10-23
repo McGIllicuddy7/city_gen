@@ -1,4 +1,5 @@
 #pragma once
+#define width 2000
 #include <stdbool.h>
 typedef enum {
     ground_grass = 0, ground_forest = 1, water = 2, street = 3, wall = 4

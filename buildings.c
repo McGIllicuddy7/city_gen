@@ -7,8 +7,8 @@ bool building_locs[gsz];
 int num_times_called = 0;
 void addBuildingAtGridSpaceCoord(int x, int y){
     building_t * b = get_buildings();
-    int x1 = x*900/sz;
-    int y1 = y*900/sz;
+    int x1 = x*width/sz;
+    int y1 = y*width/sz;
     b[getNumBuildings()] = (building_t){x1, y1, 0};
     setNumBuildings(getNumBuildings()+1);
     building_locs[y*sz+x] = false;

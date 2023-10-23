@@ -1,38 +1,35 @@
-#define GL_SILENCE_DEPRECATION
-#ifdef __linux__
-#include <GL/gl.h>
-#include <GL/freeglut.h>
-#endif
-#ifdef __osx__
-#include <OPENGL/gl.h>
-#include <GLUT/glut.h>
-#endif
+#include <Raylib/raylib.h>
 #include <stdlib.h>
 #include "generator.h"
 #include <stdio.h>
+#include <unistd.h>
+#include <time.h>
 #include <string.h>
 char cityName[1000];
 void tick(void){
-    glClearColor(1,1,1,1);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glColor3f(1,1,1);
+    BeginDrawing();
     renderGrid();
-    glutPostRedisplay();
-    glFlush();
+    EndDrawing();
 }
-void KeyboardHandler(unsigned char c, int x, int y){
-    if(c == 27){
-        save_city(cityName);
-        exit(0);
+bool h_down = false;
+void KeyboardHandler(){
+    if(IsKeyDown(KEY_ESCAPE)){
+        CloseWindow();
     }
-    if(c == 'h'){
-        flipShouldShow();
+    if(IsKeyDown(KEY_H)){
+        if(!h_down){
+            flipShouldShow();
+        }
+        h_down = true;
+    }
+    else{
+        h_down = false;
     }
 }
 int main(int argc, char ** argv){
     char buff[100];
     memset(buff, '\0',100);
-    printf("enter land type(water_north 0, water_south 1,water_east 2, water_west 3, river_north_south 4, river_east_west 5, island 6, inland 7or 8 to load): ");
+    printf("enter land type(water_north 0, water_south 1,water_east 2, water_west 3, river_north_south 4, river_east_west 5, island 6, inland 7 or 8 to load): ");
     fgets(buff, 100, stdin);
     int t = atoi(buff);
     if(t != 8){
@@ -50,12 +47,10 @@ int main(int argc, char ** argv){
         load_city(cityName);
     }
     printf("number buildings: %d\n", getNumBuildings());
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE|GLUT_RGB);
-    glutInitWindowSize(900,900);
-    glutInitWindowPosition(100,100);
-    glutCreateWindow("Map");
-    glutDisplayFunc(tick);
-    glutKeyboardFunc(KeyboardHandler);
-    glutMainLoop();
+    InitWindow(width,width, cityName);
+    while(!WindowShouldClose()){
+        KeyboardHandler();
+        tick();
+    }
+    save_city(cityName);
 }

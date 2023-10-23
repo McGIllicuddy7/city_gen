@@ -1,13 +1,6 @@
 #define GL_SILENCE_DEPRECATION
+#include <Raylib/raylib.h>
 #include "generator.h"
-#ifdef __linux__
-#include <GL/gl.h>
-#include <GL/freeglut.h>
-#endif
-#ifdef __osx__
-#include <OPENGL/gl.h>
-#include <GLUT/glut.h>
-#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +8,7 @@
 #include "geography.h"
 #include "buildings.h"
 square grid[gsz];
-building_t buildings[10000] = {450, 450, 0};
+building_t buildings[10000] = {width, width, 0};
 int num_buildings = 0;
 bool shouldShow = true;
 int interestingIndices[100] = {-1};
@@ -28,69 +21,36 @@ void setNumBuildings(int value){
 int getNumBuildings(){
     return num_buildings;
 }
-void drawRectangle(float x, float y, float height, float width, unsigned char r, unsigned char g, unsigned char b){
-    glBegin(GL_TRIANGLES);
-    glColor3f((float)r/127,(float)g/127,(float)b/127);
-    glVertex2d(x, y);
-    glVertex2d(x, y+height);
-    glVertex2d(x+width, y+height);
-    glEnd();
-    glBegin(GL_TRIANGLES);
-    glColor3f((float)r/127,(float)g/127,(float)b/127);
-    glVertex2d(x, y);
-    glVertex2d(x+width, y);
-    glVertex2d(x+width, y+height);
-    glEnd();
-}
-typedef struct{
-    float x;
-    float y;
-}float2;
-void standardDrawRectangle(int x, int y, int height, int width, unsigned char r, unsigned char g,unsigned char b){
-    float x1 = (((float)x)/900)*2-1;
-    float y1 = (((float)y)/900)*2-1;
-    float h = ((float)height)/450;
-    float w = ((float)width)/450;
-    drawRectangle(x1,y1,h,w, r,g,b);
-}
-void displayText( float x, float y, int r, int g, int b, const char *string ) {
-    int j = strlen( string );
-    glColor3f( r, g, b );
-    glRasterPos2f( x, y );
-    for( int i = 0; i < j; i++ ) {
-        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10, string[i] );
-    }
-}
 void renderGrid(void){
     for(int y = 0; y<sz; y++){
         for(int x = 0; x<sz; x++){
             square sq = grid[y*sz+x]; 
             //printf("%d, ", sq);
             if(sq == ground_grass){
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz,0,60,0);
+                DrawRectangle(x*width/sz, y*width/sz, width/sz, width/sz,(Color){0,60,0,255});
             }
             else if(sq ==ground_forest){
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 25,45,5);
+                DrawRectangle(x*width/sz, y*width/sz, width/sz, width/sz, (Color){25,45,5,255});
             }
             else if(sq == water){
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 0,0,127);
+                DrawRectangle(x*width/sz, y*width/sz, width/sz, width/sz, (Color){0,0,127,255});
             }
             else if(sq == wall){
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz, 0,0,0);
+                DrawRectangle(x*width/sz, y*width/sz, width/sz, width/sz, (Color){0,0,0,255});
             }
             else{
-                standardDrawRectangle(x*900/sz, y*900/sz, 900/sz, 900/sz,45,45,45);
+                DrawRectangle(x*width/sz, y*width/sz, width/sz, width/sz,(Color){45,45,45,255});
             }
         }
     }
     for(int i = 0; i<num_buildings; i++){
-        standardDrawRectangle(buildings[i].x+1, buildings[i].y+1, 7, 7,40, 20, 0);
+        DrawRectangle(buildings[i].x+1, buildings[i].y+1, width/sz-1, width/sz-1,(Color){40, 20, 0,255});
     }
     for(int x =0; x<sz; x++){
-        standardDrawRectangle(x*900/sz,0,900, 1,0,0,0);
+        DrawRectangle(x*width/sz,0,width,1, (Color){1,0,0,255});
     }
     for(int y = 0; y<= sz; y++){
-        standardDrawRectangle(0,y*900/sz,1,900,0,0,0);
+        DrawRectangle(0,y*width/sz,1,width,(Color){0,0,0,255});
     }
     if(!shouldShow){
         return;
@@ -100,7 +60,7 @@ void renderGrid(void){
         sprintf(buff,"%d", i);
         float x = buildings[i].x+5;
         float y = buildings[i].y+5;
-        displayText(x/450-1, y/450-1, 125,125,125, buff);
+        DrawText(buff, x-3, y-3,1,WHITE);
     }
 }
 void recalculateLocations(){
@@ -110,7 +70,7 @@ void recalculateLocations(){
         indices[i] = -1;
     }
     for(int i = 0; i<num_buildings; i++){
-        indices[(sz*sz-(buildings[i].y*sz/900*sz))+buildings[i].x*sz/900] = i;
+        indices[(sz*sz-(buildings[i].y*sz/width*sz))+buildings[i].x*sz/width] = i;
     }
     building_t nbuildings[10000];
     int c = 0;
@@ -157,6 +117,18 @@ void save_city(char * name){
     fwrite(&num_buildings,sizeof(int), 1, file);
     fwrite(buildings,sizeof(building_t), num_buildings, file);
     fclose(file);
+    RenderTexture2D map = LoadRenderTexture(width,width);
+    BeginTextureMode(map);
+    renderGrid();
+    EndTextureMode();
+    buffer[l+1] = 'p';
+    buffer[l+2] = 'n';
+    buffer[l+3] = 'g';
+    Image img = LoadImageFromTexture(map.texture);
+    ImageFlipVertical(&img);
+    ExportImage(img,buffer);
+    UnloadImage(img);
+    UnloadRenderTexture(map);
 }
 void load_city(char * name){
     char buffer[1000] = "output/";
