@@ -75,11 +75,30 @@ int max_distance_pop(int pop){
         return 40;
     }
     else if(pop<8000){
-        return 60;
+        return 50;
     }
-    else{
-        return 55;
+    else if(pop<10000){
+        return 54;
     }
+    else if(pop<12000){
+        return 59;
+    }
+    else if(pop<14000){
+        return 64;
+    }
+    else if(pop<16000){
+        return 69;
+    }
+    else if(pop<18000){
+        return 74;
+    }
+    else if(pop<20000){
+        return 77;
+    }
+    else if(pop<24000){
+        return 80;
+    }
+    return 82;
 }
 int2Array_t calcSuitablePositions(square * grid, int pop){
     int2Array_t out;
@@ -110,25 +129,25 @@ void GenerateBuildings(square * grid, city_size size){
     int pop = 0;
     for(int i = 0; i<gsz; i++){building_locs[i] = true;}
     if(size == village){
-        max_population = RandomIntInRange(100, 250);
-    }
-    else if(size ==  small_town){
         max_population = RandomIntInRange(250, 500);
     }
-    else if(size == medium_town){
-        max_population = RandomIntInRange(500, 1000);
+    else if(size ==  small_town){
+        max_population = RandomIntInRange(500,1000);
     }
-    else if(size == large_town){
+    else if(size == medium_town){
         max_population = RandomIntInRange(1000, 2000);
     }
-    else if(size == small_city){
+    else if(size == large_town){
         max_population = RandomIntInRange(2000, 4000);
     }
-    else if(size == medium_city){
+    else if(size == small_city){
         max_population = RandomIntInRange(4000, 8000);
     }
-    else{
+    else if(size == medium_city){
         max_population = RandomIntInRange(8000, 16000);
+    }
+    else{
+        max_population = RandomIntInRange(16000, 32000);
     }
     printf("max population: %d\n", max_population);
     while(true){
@@ -162,7 +181,7 @@ void GenerateWalls(square * grid){
     for(int y = 0; y<sz; y++){
         for(int x= 0; x<sz; x++){
             float distance = (sqrt((x-sz/2)*(x-sz/2)+(y-sz/2)*(y-sz/2)));
-            if(false){
+            if(distance<d+4 && distance> d+2){
                 if(gridGet(x,y) == ground_grass){
                     gridGet(x,y) = wall;
                 }

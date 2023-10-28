@@ -12,6 +12,7 @@
 #include <time.h>
 #include "geography.h"
 #include "buildings.h"
+#include "data.h"
 square grid[gsz];
 building_t buildings[10000] = {width, width, 0};
 int num_buildings = 0;
@@ -73,7 +74,6 @@ void renderGrid(void){
     }
 }
 void recalculateLocations(){
-    //exit(0);
     int indices[gsz] = {-1};
     for(int i = 0; i<gsz; i++){
         indices[i] = -1;
@@ -101,15 +101,16 @@ void generateCity(land_type land, city_size size, bool walled){
     GenerateBuildings(grid, size);
     printf("buidlings done %ld seconds\n", time(0)-t);
     t = time(0);
-    if(walled){
-        GenerateWalls(grid);
-    }
+    calculate_building_data(buildings, interestingIndices);
     remove_streets(grid);
     recalculateLocations();
     prettifyGeography(grid);
+    if(walled){
+        GenerateWalls(grid);
+    }
     printf("streets done %ld seconds\n", time(0)-t);
 }
-void save_city(char * name){
+void save_city(char * name,RenderTexture2D map){
     char buffer[1000] = "output/";
     int l = strlen(name);
     int d = strlen(buffer);
@@ -126,7 +127,6 @@ void save_city(char * name){
     fwrite(&num_buildings,sizeof(int), 1, file);
     fwrite(buildings,sizeof(building_t), num_buildings, file);
     fclose(file);
-    RenderTexture2D map = LoadRenderTexture(width,width);
     BeginTextureMode(map);
     renderGrid();
     EndTextureMode();

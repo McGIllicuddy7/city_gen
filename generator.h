@@ -1,11 +1,14 @@
 #pragma once
-#define width 2000
+
 #include <stdbool.h>
+#include <raylib.h>
+#define width 4000
+#define swidth 1000
 typedef enum {
     ground_grass = 0, ground_forest = 1, water = 2, street = 3, wall = 4
 } square;
-#define sz 100
-#define gsz 10000
+#define sz 200
+#define gsz 40000
 #define MAX_INTERESTING 100
 typedef struct{
     int x;
@@ -24,5 +27,5 @@ typedef enum{
 }city_size;
 void generateCity(land_type land, city_size size, bool walled);
 void flipShouldShow();
-void save_city(char * name);
+void save_city(char * name,RenderTexture2D Map);
 void load_city(char * name);
