@@ -1,9 +1,20 @@
 #pragma once
 
 #include <stdbool.h>
+#ifdef __linux__
+#include <Raylib/raylib.h>
+#endif
+#ifndef __linux__
 #include <raylib.h>
+#endif
+
 #define width 4000
+#ifdef __linux__
+#define swidth 2000
+#endif
+#ifndef __linux__
 #define swidth 1000
+#endif
 typedef enum {
     ground_grass = 0, ground_forest = 1, water = 2, street = 3, wall = 4
 } square;

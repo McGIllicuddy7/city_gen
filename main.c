@@ -1,5 +1,10 @@
 #include <stdlib.h>
+#ifdef __linux__
+#include <Raylib/raylib.h>
+#endif
+#ifndef __linux__
 #include <raylib.h>
+#endif
 #include "generator.h"
 #include <stdio.h>
 #include <unistd.h>
