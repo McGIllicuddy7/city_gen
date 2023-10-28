@@ -11,7 +11,8 @@ square grid[gsz];
 building_t buildings[10000] = {width, width, 0};
 int num_buildings = 0;
 bool shouldShow = true;
-int interestingIndices[100] = {-1};
+int interestingIndices[MAX_INTERESTING] = {-1};
+
 building_t * get_buildings(){
     return buildings;
 }
@@ -55,12 +56,15 @@ void renderGrid(void){
     if(!shouldShow){
         return;
     }
-    for(int i =0; i<num_buildings; i++){
-        char buff[100];
-        sprintf(buff,"%d", i);
-        float x = buildings[i].x+5;
-        float y = buildings[i].y+5;
-        DrawText(buff, x-3, y-3,1,WHITE);
+    for(int i =0; i<MAX_INTERESTING; i++){
+        if(interestingIndices[i] != -1){
+            char buff[100];
+            int j = interestingIndices[i];
+            sprintf(buff,"%d", j);
+            float x = buildings[j].x+5;
+            float y = buildings[j].y+5;
+            DrawText(buff, x-3, y-3,1,WHITE);
+        }   
     }
 }
 void recalculateLocations(){
