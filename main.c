@@ -1,4 +1,9 @@
+#ifdef __APPLE__
+#include <raylib.h>
+#endif
+#ifndef __APPLE__
 #include <Raylib/raylib.h>
+#endif
 #include <stdlib.h>
 #include "generator.h"
 #include <stdio.h>

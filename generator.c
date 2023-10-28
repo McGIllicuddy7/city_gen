@@ -1,5 +1,10 @@
 #define GL_SILENCE_DEPRECATION
+#ifdef __APPLE__
+#include <raylib.h>
+#endif
+#ifndef __APPLE__
 #include <Raylib/raylib.h>
+#endif
 #include "generator.h"
 #include <stdio.h>
 #include <stdlib.h>
