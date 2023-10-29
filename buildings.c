@@ -56,49 +56,50 @@ int2 calcCityCenterMass(){
     return out;
 }
 int max_distance_pop(int pop){ 
+    int off = RandomIntInRange(-5,5);
     if(pop<100){
-        return 6;
+        return 6+off;
     }
     else if(pop<200){
-        return 12;
+        return 12+off;
     }
     else if(pop<500){
-        return 17;
+        return 17+off;
     }
     else if(pop<1000){
-        return 20;
+        return 20+off;
     }
     else if(pop<2000){
-        return 30;
+        return 30+off;
     }
     else if(pop<4000){
-        return 40;
+        return 40+off;
     }
     else if(pop<8000){
-        return 50;
+        return 50+off;
     }
     else if(pop<10000){
-        return 54;
+        return 54+off;
     }
     else if(pop<12000){
-        return 59;
+        return 59+off;
     }
     else if(pop<14000){
-        return 64;
+        return 64+off;
     }
     else if(pop<16000){
-        return 69;
+        return 69+off;
     }
     else if(pop<18000){
-        return 74;
+        return 74+off;
     }
     else if(pop<20000){
-        return 77;
+        return 77+off;
     }
     else if(pop<24000){
-        return 80;
+        return 80+off;
     }
-    return 82;
+    return 82+off;
 }
 int2Array_t calcSuitablePositions(square * grid, int pop){
     int2Array_t out;

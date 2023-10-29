@@ -20,7 +20,7 @@ typedef enum {
 } square;
 #define sz 200
 #define gsz 40000
-#define MAX_INTERESTING 100
+#define MAX_INTERESTING 2000
 typedef struct{
     int x;
     int y;

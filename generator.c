@@ -66,10 +66,10 @@ void renderGrid(void){
         if(interestingIndices[i] != -1){
             char buff[100];
             int j = interestingIndices[i];
-            sprintf(buff,"%d", j);
+            sprintf(buff,"%d",i);
             float x = buildings[j].x+5;
             float y = buildings[j].y+5;
-            DrawText(buff, x-3, y-3,1,WHITE);
+            DrawText(buff, x-3, y-3,12,WHITE);
         }   
     }
 }
@@ -127,6 +127,7 @@ void save_city(char * name,RenderTexture2D map){
     fwrite(&num_buildings,sizeof(int), 1, file);
     fwrite(buildings,sizeof(building_t), num_buildings, file);
     fclose(file);
+    shouldShow = true;
     BeginTextureMode(map);
     renderGrid();
     EndTextureMode();
