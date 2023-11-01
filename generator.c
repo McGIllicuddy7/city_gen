@@ -99,7 +99,7 @@ void generateCity(land_type land, city_size size, bool walled){
     printf("geography done %ld seconds\n", time(0)-t);
     t = time(0);
     GenerateBuildings(grid, size);
-    printf("buidlings done %ld seconds\n", time(0)-t);
+    printf("buildings done %ld seconds\n", time(0)-t);
     t = time(0);
     calculate_building_data(buildings, interestingIndices);
     remove_streets(grid);
